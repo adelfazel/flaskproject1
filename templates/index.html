@@ -9,7 +9,7 @@
 {% block body %}
 <p>
 Welcome to book search world! You can search for a book.
-<a href="">Register here</a>.
-Already a member? <a href="{{ url_for('')}}">login here</a>
+<a href="{{ url_for('register')}}">Register here</a>.
+Already a member? <a href="{{ url_for('login')}}">login here</a>
 </p>
 {% endblock %}
