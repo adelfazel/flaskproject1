@@ -1,0 +1,15 @@
+{% extends "layout.html"%}
+
+{% block pageTitle %}Login page{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>
+
+{% endblock %}
+{% block heading %} Welcome to book review website {% endblock %}
+{% block body %}
+<p>
+Welcome to book search world! You can search for a book.
+<a href="">Register here</a>.
+Already a member? <a href="{{ url_for('')}}">login here</a>
+</p>
+{% endblock %}
