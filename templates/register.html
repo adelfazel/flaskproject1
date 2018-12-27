@@ -2,20 +2,35 @@
 
 {% block pageTitle %}Register{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>
+<!--<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>-->
 
 {% endblock %}
-{% block heading %} Welcome to book review website, Registeration time! {% endblock %}
+{% block heading %} Welcome to book review website {% endblock %}
 
 {% block body %}
 <p>
-Welcome to book search world! You can search for a book.
+Welcome to book search world! Register for no reason.
 </p>
-<form action="{{ url_for('login')}}" method="post">
-	<input type="text" name="name" placeholder="Enter your name">
+{% if regerror %}
+<p class="alert alert-warning">
+	{{ errormessage }}
+</p>
+{% endif %}
+<form action="{{ url_for('register')}}" method="post">
 	<input type="text" name="username" placeholder="Enter username">
+  <input type="text" name="email" placeholder="Enter email">
 	<input type="password" name="password" placeholder="password">
 	<button>Submit!</button>
 </form>
+{% if succes_reg %}
+<p class="alert alert-success">
+	<a href="{{ url_for('login')}}">Succesfully Registered! Login here</a>
+</p>
+{% else %}
+<p>
+Already a member? <a href="{{ url_for('login')}}">Login here</a>
+</p>
+
+{% endif %}
 
 {% endblock %}
