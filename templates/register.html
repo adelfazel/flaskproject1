@@ -5,13 +5,13 @@
 <!--<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>-->
 
 {% endblock %}
-{% block heading %} Welcome to book review website {% endblock %}
+<h1> Welcome to book review website </h1>
 
 {% block body %}
 <p>
-Welcome to book search world! Register for no reason.
+Register today with the chance of finding the right book to read.
 </p>
-{% if regerror %}
+{% if errormessage is defined %}
 <p class="alert alert-warning">
 	{{ errormessage }}
 </p>
@@ -22,15 +22,8 @@ Welcome to book search world! Register for no reason.
 	<input type="password" name="password" placeholder="password">
 	<button>Submit!</button>
 </form>
-{% if succes_reg %}
-<p class="alert alert-success">
-	<a href="{{ url_for('login')}}">Succesfully Registered! Login here</a>
-</p>
-{% else %}
 <p>
-Already a member? <a href="{{ url_for('login')}}">Login here</a>
+Already a member? <a href="{{ url_for('login') }}">Login here</a>
 </p>
-
-{% endif %}
 
 {% endblock %}

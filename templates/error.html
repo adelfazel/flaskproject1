@@ -1,0 +1,16 @@
+{% extends "layout.html"%}
+
+{% block pageTitle %}Error{% endblock %}
+{% block style %}
+<!--<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>-->
+
+{% endblock %}
+{% block heading %}  {% endblock %}
+{% block body %}
+<p>
+Not sure why you are here? Neither do we !
+<a href="{{ url_for('register')}}">Register here</a>.
+Already a member? <a href="{{ url_for('login')}}">login here</a>
+
+</p>
+{% endblock %}

@@ -1,0 +1,3 @@
+# logon library used for handling login and stuff
+flask-login
+pip install psycopg2-binary

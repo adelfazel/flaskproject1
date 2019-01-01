@@ -1,16 +1,13 @@
 {% extends "layout.html"%}
 
-{% block pageTitle %}Login page{% endblock %}
+{% block pageTitle %}Home{% endblock %}
 {% block style %}
 <!--<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}"/>-->
 
 {% endblock %}
-{% block heading %} Welcome to my book review website {% endblock %}
 {% block body %}
+<h1> Welcome to my book review website </h1>
 <p>
-Welcome to book search world! You can search for a book.
-<a href="{{ url_for('register')}}">Register here</a>.
-Already a member? <a href="{{ url_for('login')}}">login here</a>
-
+Register to find new books to read! you can write reviews and see what others have to say about the books.
 </p>
 {% endblock %}
