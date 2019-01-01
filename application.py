@@ -54,10 +54,7 @@ def search():
             author = request.form.get("author").replace(" ", "")
             title = request.form.get("title").replace(" ", "")
             if author != "" or title != "" or isbn != "":
-                sqlQuery = "SELECT * FROM books where \
-                isbn like '%{0}%' and author like '%{1}%' and \
-                title like '%{2}%'".format(isbn, author, title)
-                books = db.execute(sqlQuery).fetchall()
+                books = db.execute(f"SELECT * FROM books where isbn like '%{isbn}%' and author like '%{author}%' and title like '%{title}%'").fetchall()
                 if books:
                     return render_template("search.html", session=session, searchResults = books)
                 else:
@@ -71,25 +68,24 @@ def search():
 
 @app.route("/search/<book_isbn>", methods=["POST", "GET"])
 def booksearch(book_isbn):
-    if session.get("logged_in",False) is False:
-        redirect(url_for(login))
+
     session["page"] = "search"
+    username = session['username']
     if session.get("logged_in", False) is False:
         flash('You need to login to access search page')
         return redirect(url_for("login"))
     try:
-        book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": book_isbn}).fetchone()
+        book = db.execute(f"SELECT * FROM books WHERE isbn = '{book_isbn}';").fetchone()
+        
         if book is None:
             redirect(url_for('search'))
         else:
             if request.method == "POST":
                 try:
+                    created_on = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     commnet = request.form.get("comment")
                     userrating = request.form.get("starRating")
-
-                    db.execute("INSERT INTO bookreviews (username,isbn,comment,stars,created_on) values (:username,:isbn,:comment,:userrating,TIMESTAMP :created_on);",         {"username":session["username"],"isbn":book_isbn,"comment": commnet,"userrating":userrating,"created_on":str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))})
-                    errorMessage = None
-
+                    db.execute(f"INSERT INTO bookreviews (username,isbn,comment,stars,created_on) values ('{username}','{book_isbn}','{commnet}','{userrating}',TIMESTAMP '{created_on}');")
                 except Exception:
                     flash("Cannot add your comment, you have already reviewed it!")
                 finally:
@@ -100,7 +96,7 @@ def booksearch(book_isbn):
 
     comments = db.execute("SELECT * FROM bookreviews WHERE isbn = :isbn;",{"isbn":book_isbn}).fetchall()
 
-    db.commit()
+
     goodReadsData = None
     goodReads_reviewcount = None
     goodReads_ratings = None
@@ -126,7 +122,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         password = hashlib.md5(password.encode('utf-8')).hexdigest()
-        existsStatus = db.execute("SELECT * from account where username=:username AND password=:password",{"username":username,"password":password}).rowcount != 0
+        existsStatus = db.execute(f"SELECT * from account where username='{username}' AND password='{password}'").rowcount != 0
         if existsStatus:
             session['logged_in'] = True
             session['username'] = username
@@ -147,12 +143,15 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
-        existsStatus = db.execute("SELECT * from account where username=:username OR email=:email",{"username":username, "email":email}).rowcount != 0
+        password = str(hashlib.md5(password.encode('utf-8')).hexdigest())
+        created_on = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        existsStatus = db.execute(f"SELECT * from account where username='{username}' OR email='{email}'").rowcount != 0
         if existsStatus:
             return render_template("register.html",errormessage=" Username or email are already taken ")
         else:
-            db.execute("INSERT INTO account (username,email,password,created_on) values(:username, :email,:password,TIMESTAMP :created_on)", {"username":username, "email":email, "password":str(hashlib.md5(password.encode('utf-8')).hexdigest()), "created_on":str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))})
+            db.execute(f"INSERT INTO account (username,email,password,created_on) values('{username}', '{email}','{password}',TIMESTAMP '{created_on}')")
             db.commit()
+            flash(" You registered successfully! ")
             session['username'] = username
             return redirect(url_for("login"))
 
@@ -200,9 +199,20 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('index'))
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db.commit()
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
