@@ -1,7 +1,7 @@
 {% extends "layout.html"%}
 
 {% block pageTitle %}Explore the world {% endblock %}
-{% block style %}<link rel="stylesheet" href="{{ url_for('static',filename='styles/defaultstyle.css') }}">
+{% block style %}
 {% endblock %}
 
 
@@ -11,17 +11,27 @@
 <h2>Book details</h2>
 <div id="bookDetils">
 	<table >
-	 		<tr><td>Isbn</td><td> {{ book.isbn }}<td>
-		  <tr><td>Author</td><td>  {{ book.author }}<td>
-		  <tr><td>Title</td><td> {{ book.title }}<td>
-			<tr><td>Year</td><td> {{ book.year }}<td>
+	 		<tr><td class="leftMostTable">Isbn</td><td> {{ book.isbn }}</td>
+		  <tr><td class="leftMostTable">Author</td><td>  {{ book.author }}</td>
+		  <tr><td class="leftMostTable">Title</td><td> {{ book.title }}</td>
+			<tr><td class="leftMostTable">Year</td><td> {{ book.year }}</td>
 
 </table>
 </div>
-	<div id="commnets">
-
+<div id="ratings">
+	{% if goodReads is defined %}
+	<h2>GoodReads summary on the book</h2>
+		<p>
+			Goodreads rates this {{ goodReads['ratings'] }} based on {{ goodReads['reviewcount'] }} reviews.
+		</p>
+	{% else %}
+		<p>No ratings found for this record in goodreads</p>
+	{%endif%}
+</div>
+<div id="commnets">
+	<h2>What users of this website?</h2>
+	
 	{% if comments %}
-		<h2>What Others have to say?</h2>
 			<ul>
 
 				{% for review in comments %}
@@ -33,21 +43,9 @@
 			</ul>
 	{% else %}
 		<p>No comments from our readers to display</p>
-
 	{%endif%}
 	</div>
-<div id="ratings">
-	{% if goodReads is defined %}
-		<p>
-			Goodreads rates this {{ goodReads['ratings'] }} based on {{ goodReads['reviewcount'] }} reviews.
-		</p>
-	{% else %}
-		<p>No ratings found for this record in goodreads</p>
-	{%endif%}
-</div>
-
 <div id="comment_submit" class="container">
-
 <form action="{{ url_for('booksearch',book_isbn=book.isbn) }}" method="post"
 name="commentForm">
   <textarea name="comment" rows="10" cols="30" placeholder="Put comment here"></textarea>
@@ -61,8 +59,6 @@ name="commentForm">
 	   <option value="5">5 Star</option>
 	 </select >
 </form>
-
-
 
 <p> Go back to <a href="{{ url_for('search') }}">search</a>	</p>
 
