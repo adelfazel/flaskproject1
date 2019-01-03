@@ -30,7 +30,7 @@
 </div>
 <div id="commnets">
 	<h2>What users of this website?</h2>
-	
+
 	{% if comments %}
 			<ul>
 
@@ -45,7 +45,7 @@
 		<p>No comments from our readers to display</p>
 	{%endif%}
 	</div>
-<div id="comment_submit" class="container">
+<div id="comment_submit" >
 <form action="{{ url_for('booksearch',book_isbn=book.isbn) }}" method="post"
 name="commentForm">
   <textarea name="comment" rows="10" cols="30" placeholder="Put comment here"></textarea>

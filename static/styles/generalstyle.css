@@ -1,8 +1,11 @@
-h1 {
-	padding: 15px;
+h1, form {
+	margin: 15px;
 }
-h2, p {
-	padding: 30px;
+h2 {
+	margin: 30px;
+}
+p {
+	margin: inherit;
 }
 table {
 	margin: auto;
